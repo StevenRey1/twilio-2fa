@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Colombia Humana</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+        .header {
+            background-color: #d71a1a;
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+        }
+        .form-container {
+            max-width: 500px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #d71a1a;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #b51717;
+        }
+        .form-label {
+            font-weight: bold;
+            color: #343a40;
+        }
+        .messages {
+            margin-top: 1rem;
+        }
+        .messages li {
+            color: #d71a1a;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Colombia Humana</h1>
+    </header>
+
+    <div class="container">
+        <div class="form-container">
+            <h2 class="text-center">Iniciar Sesión</h2>
+            <form method="POST" action="{{ url_for('login') }}">
+                <div class="mb-3">
+                    <label for="identificacion" class="form-label">Cédula:</label>
+                    <input type="number" class="form-control" id="identificacion" name="identificacion" required placeholder="Ingrese su cédula">
+                </div>
+
+                <div class="mb-3">
+                    <label for="verification_method" class="form-label">Seleccione método de verificación:</label>
+                    <select name="verification_method" id="verification_method" class="form-select" required onchange="toggleVerificationFields()">
+                        <option value="sms">SMS</option>
+                        <option value="email">Email</option>
+                    </select>
+                </div>
+
+                <!-- Email field, initially hidden -->
+                <div class="mb-3" id="email" style="display:none;">
+                    <label for="email_input" class="form-label">Correo electrónico:</label>
+                    <input type="email" class="form-control" id="email_input" name="email" placeholder="Ingrese su correo electrónico">
+                </div>
+
+                <!-- Phone field, initially shown -->
+                <div class="mb-3" id="phone">
+                    <label for="phone_input" class="form-label">Número de teléfono:</label>
+                    <div class="input-group">
+                        <span class="input-group-text">+57</span>
+                        <input type="number" class="form-control" id="phone_input" name="phone" placeholder="Ingrese su número de teléfono" oninput="this.value = this.value.replace(/\s/g, '')">
+                    </div>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                </div>
+            </form>
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class="messages list-unstyled">
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (Optional for interactive components) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function toggleVerificationFields() {
+            const verificationMethod = document.getElementById("verification_method").value;
+            const emailField = document.getElementById("email");
+            const phoneField = document.getElementById("phone");
+            const emailInput = document.getElementById("email_input");
+            const phoneInput = document.getElementById("phone_input");
+
+            if (verificationMethod === "email") {
+                emailField.style.display = "block";
+                phoneField.style.display = "none";
+                emailInput.required = true;
+                phoneInput.required = false;
+            } else {
+                emailField.style.display = "none";
+                phoneField.style.display = "block";
+                emailInput.required = false;
+                phoneInput.required = true;
+            }
+        }
+
+        // Initial call to set the fields based on default selection
+        window.onload = function() {
+            toggleVerificationFields();
+        }
+    </script>
+</body>
+</html>
